@@ -1,0 +1,2801 @@
+{
+	"info": {
+		"_postman_id": "9d10eea3-24c7-41ee-acf6-f28b499f308b",
+		"name": "GRUNDFOS UAE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "TokenGenerate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response=pm.response.json();\r",
+							"pm.environment.set(\"Authorization\",response.auth.token);\r",
+							"pm.environment.set(\"sessionId\",response.user.sessionId);\r",
+							"\r",
+							"/*Used to run the next API request in the workflow*/\r",
+							"postman.setNextRequest(\"OTPGenerate\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic ZWFyZC5lZi5iZGcuMDAzOjE0YjI1OTNiNWU0NGY3MjgwZDY5NTg1YjBlNWIyMThj",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "  {\r\n      \"mobile\":\"{{mobile}}\",\r\n      \"deviceId\":\"{{deviceId}}\",\r\n      \"brand\" : \"{{brand}}\"\r\n  }"
+				},
+				"url": {
+					"raw": "{{SERVERAUTHURL}}/auth/v1/token/generate",
+					"host": [
+						"{{SERVERAUTHURL}}"
+					],
+					"path": [
+						"auth",
+						"v1",
+						"token",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OTPGenerate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/*Used to run the next API request in the workflow*/\r",
+							"postman.setNextRequest(\"OTPValidate\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"mobile\": \"{{mobile}}\",\"deviceId\": \"{{deviceId}}\",\"brand\": \"{{brand}}\",\"sessionId\": \"{{sessionId}}\"}"
+				},
+				"url": {
+					"raw": "{{SERVERAUTHURL}}/auth/v1/otp/generate",
+					"host": [
+						"{{SERVERAUTHURL}}"
+					],
+					"path": [
+						"auth",
+						"v1",
+						"otp",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OTPValidate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response=pm.response.json();\r",
+							"pm.environment.set(\"Authorization\",response.auth.token);\r",
+							"pm.environment.set(\"key\",response.auth.key);\r",
+							"\r",
+							"/*Used to run the next API request in the workflow*/\r",
+							"postman.setNextRequest(\"customer  get\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"mobile\": {{mobile}},\"deviceId\": \"{{deviceId}}\",\"brand\": \"{{brand}}\",\"sessionId\": \"{{sessionId}}\",\"otp\": \"999999\"}\n"
+				},
+				"url": {
+					"raw": "{{SERVERAUTHURL}}/auth/v1/otp/validate",
+					"host": [
+						"{{SERVERAUTHURL}}"
+					],
+					"path": [
+						"auth",
+						"v1",
+						"otp",
+						"validate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TokenRegenerate",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"mobile\": \"{{mobile}}\",\"deviceId\": \"{{deviceId}}\",\"brand\":\"{{brand}}\",\"key\":\"{{key}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{SERVERAUTHURL}}/auth/v1/token/regenerate",
+					"protocol": "https",
+					"host": [
+						"{{SERVERAUTHURL}}"
+					],
+					"path": [
+						"auth",
+						"v1",
+						"token",
+						"regenerate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer  get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/*Used to run the next API request in the workflow*/\r",
+							"postman.setNextRequest(null);\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"/*console.log(jsonData.customers);\r",
+							"\r",
+							"/* Test 1: To test the response status*/\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"/*Test 2: To test the response status*/ \r",
+							"pm.test(\"Response was successfully sent\", function () {\r",
+							"    pm.expect(jsonData.status.success).to.eql(\"true\");\r",
+							"});\r",
+							"\r",
+							"/*Test 3: To test that the customer mobile no is available in the response*/ \r",
+							"pm.test(\"Mobile number is available and is not null\", function () {\r",
+							"    pm.expect(jsonData.customers.customer[0].mobile).is.not.null;\r",
+							"});\r",
+							"\r",
+							"/*Test 3: To test that the customer was registered from a UAE till*/ \r",
+							"pm.test(\"The customer was registered in a UAE till\", function () {\r",
+							"    pm.expect(jsonData.customers.customer[0].registered_till.code).to.eql(\"grundfos.demo.uae\");\r",
+							"});\r",
+							"//pm.expect(jsonData.customers.customer[0].registered_till.code).to.eql(\"grundfos.demo.uae\");\r",
+							"\r",
+							"pm.test(\"The store name is as expected\", function(){\r",
+							"pm.expect(jsonData.customers.customer[0].registered_till.name).to.eql(\"grundfos.demo.uae\");\r",
+							"})\r",
+							"\r",
+							"/*Test to verify that the customer firstname is not null*/\r",
+							"pm.test(\"Customer first name exists\",function()\r",
+							"{\r",
+							"    \r",
+							"    pm.expect(jsonData.customers.customer[0].firstname).is.not.null;\r",
+							"}\r",
+							")\r",
+							"\r",
+							"/*Test to verify that the customer last name is not null*/\r",
+							"pm.test(\"Customer last name exists\", function()\r",
+							"{\r",
+							"pm.expect(jsonData.customers.customer[0].lastname).is.not.null\r",
+							"}\r",
+							");\r",
+							"\r",
+							"/*Test to vereify that the customer email is not null*/\r",
+							"pm.test(\" Customer email exists\",function()\r",
+							"{\r",
+							"    pm.expect(jsonData.customers.customer[0].email).is.not.null;\r",
+							"}\r",
+							");\r",
+							"/*Test to identify that the gender is not captured*/\r",
+							"pm.test(\" Gender is not captured\", \r",
+							"function()\r",
+							"{\r",
+							"    pm.expect(jsonData.customers.customer[0].gender).is.null;\r",
+							"}\r",
+							");\r",
+							"/*Test to verify that the registered_store has both store properties code and name*/\r",
+							"pm.test(\"Both store properties available for a registered store\",function()\r",
+							"{\r",
+							"var code=pm.expect(jsonData.customers.customer[0].registered_store).has.property(\"code\")\r",
+							"/*if(code)\r",
+							"{\r",
+							"    console.write(Code exists)\r",
+							"}\r",
+							"else\r",
+							"{\r",
+							"    console.write(Code does not exist)\r",
+							"}*/\r",
+							"pm.expect(jsonData.customers.customer[0].registered_store).has.property(\"name\")\r",
+							"\r",
+							"}\r",
+							");\r",
+							"console.log(jsonData.customers.customer[0].registered_store.code);\r",
+							"/*Test to verify that the registered_store has both store code and store name*/\r",
+							"pm.test(\"Registered store has store code and store name\",function()\r",
+							"{\r",
+							"    pm.expect(jsonData.customers.customer[0].code).is.not.null;\r",
+							"    pm.expect(jsonData.customers.customer[0].registered_store.name).to.eql(\"grundfos.demo.uae\")\r",
+							"}\r",
+							");\r",
+							"\r",
+							"/*Test to verify that customers is an object*/\r",
+							"pm.test(\"Customers is an object\",function()\r",
+							"{\r",
+							"    pm.expect(jsonData.customers).to.be.an(\"object\");\r",
+							"    pm.expect(jsonData.customers.customer[0].firstname).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.customers.customer[0]).to.be.an(\"array\");\r",
+							"})\r",
+							"\r",
+							"/*Test to verify if some of the properties are available in customers object array */\r",
+							"pm.test(\"firstname and last name properties available in customer array\",function()\r",
+							"{\r",
+							"pm.expect(jsonData.customers.customer[0]).to.include(\"firstname\");\r",
+							"}\r",
+							")\r",
+							"\r",
+							"/*Test to verify that an custom fields field array object has a field address_line_one */\r",
+							"pm.test(\"address line one custom field exists\",function()\r",
+							"{\r",
+							"    var custfield=jsonData.customers.customer[0].custom_fields.field\r",
+							"    const customfield=custfield.find(\r",
+							"        m=>m.name===\"address_line_one\");\r",
+							"        \r",
+							"       pm.expect(customfield).to.be.an(\"object\");\r",
+							"}\r",
+							")\r",
+							"console.log(jsonData.customers.customer[0].custom_fields.field[1].name, \"Rohan\")\r",
+							"\r",
+							"/*Another test for above*/\r",
+							"pm.test(\"Customer field for adress line 1 exists\",function()\r",
+							"{\r",
+							"    let customfield=jsonData.customers.customer[0].custom_fields.field[0]\r",
+							"pm.expect(customfield.name).is.eql(\"address_line_one\");\r",
+							"}\r",
+							")\r",
+							"\r",
+							"/*Test when the cusstom fields object array is dynamic*/\r",
+							"let Addr1custfield=jsonData.customers.customer[0].custom_fields.field;\r",
+							" console.log(Addr1custfield[1].name,\"Adeep test\");\r",
+							"pm.test(\"Custom field  address_line_one exists in the custom fields object array\",function()\r",
+							"{\r",
+							"   \r",
+							"   let first;\r",
+							"    for(let x of Addr1custfield)\r",
+							"    {\r",
+							"\r",
+							"        if(x.name==\"address_line_one\")\r",
+							"        {\r",
+							"            console.log(x,\"pirki\");\r",
+							"            first=x;\r",
+							"        } \r",
+							"            }\r",
+							"            pm.expect(first.name).to.eql(\"address_line_one\");\r",
+							"}\r",
+							")\r",
+							"\r",
+							"/*same test as above*/\r",
+							"\r",
+							"pm.test(\"Terms and conditions custom field found\",function()\r",
+							"{\r",
+							"    \r",
+							"    /*for(let x of Addr1custfield)\r",
+							"    {\r",
+							"      // pm.expect(x.name).to.eql(\"address_line_one\");\r",
+							"       console.log(x,Addr1custfield[x] );\r",
+							"            }\r",
+							"      */\r",
+							"      console.log(Addr1custfield, \"Terms and conditions custom field exists\");\r",
+							"      let terms;\r",
+							"      for(let i=0;i<5;i++)\r",
+							"      {\r",
+							"          console.log(Addr1custfield[i].name,\"This is the final loop\");\r",
+							"         if(Addr1custfield[i].name===\"terms_and_conditions\")\r",
+							"         {\r",
+							"             console.log(\"Terms and conditions exist\");\r",
+							"             terms=Addr1custfield[i].name;\r",
+							"             break;\r",
+							"         }\r",
+							"              \r",
+							"      }  \r",
+							"\r",
+							"    pm.expect(terms).is.eql(\"terms_and_conditions\");\r",
+							"}\r",
+							")\r",
+							"\r",
+							"/*Test to verify if the marketing permission custom field exists*/\r",
+							"pm.test(\"Marketing permission custom field exists\",function()\r",
+							"{\r",
+							"let custfield;\r",
+							"console.log(Addr1custfield.length, \"This is the length of the custom field array\");\r",
+							"    for(i=0;i<Addr1custfield.length;i++)\r",
+							"    {\r",
+							"        if(Addr1custfield[i].name==\"marketing_permission\")\r",
+							"        {\r",
+							"            custfield=Addr1custfield[i].name;\r",
+							"            console.log(custfield);\r",
+							"            break;\r",
+							"        }\r",
+							"    }\r",
+							"    pm.expect(custfield).is.eql(\"marketing_permission\");\r",
+							"}\r",
+							")\r",
+							"\r",
+							"/*Test too verify if the marketing field custom field value is not null*/\r",
+							"pm.test(\"Marketing field custom field value is not null and the value is as expected\",function()\r",
+							"{\r",
+							"    let custfield;\r",
+							"for(i=0;i<6;i++)\r",
+							"{\r",
+							"    if(Addr1custfield[i].name==\"marketing_permission\")\r",
+							"    {\r",
+							"custvalue=Addr1custfield[i].value;\r",
+							"console.log(custvalue,\"This is the value\");\r",
+							"break;\r",
+							"    }\r",
+							"\r",
+							"}\r",
+							"pm.expect(custvalue).is.not.null;\r",
+							"pm.expect(custvalue).is.eql(\"1\");\r",
+							"}\r",
+							")"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/customer/get?user_id=true&expiry_schedule=true&points_summary=true&email=anupam@abcd.com",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"get"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						},
+						{
+							"key": "user_id",
+							"value": "true"
+						},
+						{
+							"key": "expiry_schedule",
+							"value": "true"
+						},
+						{
+							"key": "points_summary",
+							"value": "true"
+						},
+						{
+							"key": "email",
+							"value": "anupam@abcd.com"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "customer  get",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "cap_authorization",
+								"value": "{{Authorization}}"
+							},
+							{
+								"key": "cap_brand",
+								"value": "{{brand}}"
+							},
+							{
+								"key": "cap_device_id",
+								"value": "{{deviceId}}"
+							},
+							{
+								"key": "cap_mobile",
+								"value": "{{mobile}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/customer/get?user_id=true&expiry_schedule=true&points_summary=true&email=anupam@abcd.com",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"customer",
+								"get"
+							],
+							"query": [
+								{
+									"key": "mobile",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "details",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "100",
+									"disabled": true
+								},
+								{
+									"key": "start_date",
+									"value": "2019-06-06",
+									"disabled": true
+								},
+								{
+									"key": "end_date",
+									"value": "2019-06-21",
+									"disabled": true
+								},
+								{
+									"key": "user_id",
+									"value": "true"
+								},
+								{
+									"key": "expiry_schedule",
+									"value": "true"
+								},
+								{
+									"key": "points_summary",
+									"value": "true"
+								},
+								{
+									"key": "email",
+									"value": "anupam@abcd.com"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Mon, 22 Mar 2021 07:41:38 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "POST, PUT, GET, DELETE"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Access-Control-Allow-Headers,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Authorization,Content-Type,Accept,CAP_AUTHORIZATION,CAP_DEVICE_ID,CAP_MOBILE,CAP_BRAND,CAP_IDENTIFIER_TYPE,CAP_IDENTIFIER_VALUE"
+						},
+						{
+							"key": "Access-Control-Max-Age",
+							"value": "3600"
+						},
+						{
+							"key": "Access-Control-Expose-Headers",
+							"value": "Message"
+						},
+						{
+							"key": "Server",
+							"value": "Capillary Solutions Server"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000 ; includeSubDomains"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "X-SOL-GATEWAY-REQUEST-ID",
+							"value": "5-289c37ad-2d5d-4bff-9329-60a82205b993"
+						},
+						{
+							"key": "X-CAP-REQUEST-ID",
+							"value": "5cd7db71b5350bd4d4bc2c0c87715fee"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": {\n        \"success\": \"true\",\n        \"code\": 200,\n        \"message\": \"Success\",\n        \"total\": \"1\",\n        \"success_count\": \"1\"\n    },\n    \"customers\": {\n        \"customer\": [\n            {\n                \"firstname\": \"Adeep\",\n                \"lastname\": \"BP\",\n                \"mobile\": \"971525551796\",\n                \"email\": \"adeepbp886@gmail.com\",\n                \"external_id\": null,\n                \"lifetime_points\": 1000,\n                \"lifetime_purchases\": 0,\n                \"loyalty_points\": 980,\n                \"current_slab\": \"NONE\",\n                \"registered_on\": \"2021-03-04 14:42:47\",\n                \"updated_on\": \"2021-03-19 11:51:06\",\n                \"type\": \"LOYALTY\",\n                \"source\": \"instore\",\n                \"identifiers\": [],\n                \"gender\": null,\n                \"registered_by\": \"Solution\",\n                \"registered_store\": {\n                    \"code\": \"grundfos.demo.uae\",\n                    \"name\": \"Solution\"\n                },\n                \"registered_till\": {\n                    \"code\": \"grundfos.demo.uae\",\n                    \"name\": \"grundfos.demo.uae\"\n                },\n                \"fraud_details\": {\n                    \"status\": \"NONE\",\n                    \"marked_by\": \"\",\n                    \"modified_on\": \"\",\n                    \"reason\": \"\"\n                },\n                \"points_summary\": {\n                    \"expired\": 0,\n                    \"redeemed\": 20,\n                    \"adjusted\": 0,\n                    \"returned\": 0,\n                    \"linked_partner_programs\": {\n                        \"linked_partner_program\": []\n                    }\n                },\n                \"tier_expiry_date\": \"2121-03-04 23:59:59\",\n                \"expiry_schedule\": {\n                    \"schedule\": [\n                        {\n                            \"points\": 980,\n                            \"expiry_date\": \"2022-03-31T00:00:00.000Z\",\n                            \"program_id\": \"579\"\n                        }\n                    ]\n                },\n                \"trackers\": \"\",\n                \"user_id\": \"12144464\",\n                \"current_nps_status\": null,\n                \"custom_fields\": {\n                    \"field\": [\n                        {\n                            \"name\": \"address_line_one\",\n                            \"value\": \"Old Airport ROAD\"\n                        },\n                        {\n                            \"name\": \"address_line_two\",\n                            \"value\": \"Domlur\"\n                        },\n                        {\n                            \"name\": \"terms_and_conditions\",\n                            \"value\": \"1\"\n                        },\n                        {\n                            \"name\": \"marketing_permission\",\n                            \"value\": \"1\"\n                        },\n                        {\n                            \"name\": \"delete_flag\",\n                            \"value\": \"false\"\n                        },\n                        {\n                            \"name\": \"delete_reason\",\n                            \"value\": \"deleted profile\"\n                        }\n                    ]\n                },\n                \"extended_fields\": {\n                    \"field\": [\n                        {\n                            \"name\": \"webengage_last_update_batch_creation_time\",\n                            \"value\": \"2021-03-04 14:46:01\"\n                        },\n                        {\n                            \"name\": \"webengage_last_update_batch_code\",\n                            \"value\": \"1614869100594_~2024ba2b.txt.zip\"\n                        },\n                        {\n                            \"name\": \"gender\",\n                            \"value\": \"Male\"\n                        },\n                        {\n                            \"name\": \"webengage_batch_code\",\n                            \"value\": \"1614869100594_~2024ba2b.txt.zip\"\n                        },\n                        {\n                            \"name\": \"webengage_last_update_batch_process_time\",\n                            \"value\": \"2021-03-04 14:56:58\"\n                        },\n                        {\n                            \"name\": \"binding_date\",\n                            \"value\": \"2021-03-19 11:51:00\"\n                        },\n                        {\n                            \"name\": \"webengage_batch_creation_time\",\n                            \"value\": \"2021-03-04 14:46:01\"\n                        },\n                        {\n                            \"name\": \"webengage_batch_process_time\",\n                            \"value\": \"2021-03-04 14:56:58\"\n                        },\n                        {\n                            \"name\": \"preferred_language\",\n                            \"value\": \"English\"\n                        }\n                    ]\n                },\n                \"transactions\": {\n                    \"transaction\": []\n                },\n                \"coupons\": {\n                    \"coupon\": [\n                        {\n                            \"id\": \"812347\",\n                            \"series_id\": \"1745\",\n                            \"code\": \"F2H4S1\",\n                            \"description\": \"Flipcart Offer\",\n                            \"created_date\": \"2021-03-16 14:41:33\",\n                            \"valid_till\": \"2021-12-31 23:59:59\",\n                            \"redeemed\": \"false\",\n                            \"same_user_multiple_redeem\": \"false\"\n                        },\n                        {\n                            \"id\": \"812346\",\n                            \"series_id\": \"1745\",\n                            \"code\": \"ZHNGNT\",\n                            \"description\": \"Flipcart Offer\",\n                            \"created_date\": \"2021-03-16 14:41:08\",\n                            \"valid_till\": \"2021-12-31 23:59:59\",\n                            \"redeemed\": \"false\",\n                            \"same_user_multiple_redeem\": \"false\"\n                        },\n                        {\n                            \"id\": \"812348\",\n                            \"series_id\": \"1747\",\n                            \"code\": \"PEH99L\",\n                            \"description\": \"Myntra Offer\",\n                            \"created_date\": \"2021-03-16 10:45:25\",\n                            \"valid_till\": \"2021-12-31 23:59:59\",\n                            \"redeemed\": \"false\",\n                            \"same_user_multiple_redeem\": \"false\"\n                        }\n                    ]\n                },\n                \"notes\": [],\n                \"item_status\": {\n                    \"success\": \"true\",\n                    \"code\": \"1000\",\n                    \"message\": \"Customer successfully retrieved\",\n                    \"warnings\": {\n                        \"warning\": []\n                    }\n                }\n            }\n        ]\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "reciept search",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/customer/get?user_id=true&expiry_schedule=true&points_summary=true",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"get"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						},
+						{
+							"key": "user_id",
+							"value": "true"
+						},
+						{
+							"key": "expiry_schedule",
+							"value": "true"
+						},
+						{
+							"key": "points_summary",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reupload image",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/customer/get?user_id=true&expiry_schedule=true&points_summary=true",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"get"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						},
+						{
+							"key": "user_id",
+							"value": "true"
+						},
+						{
+							"key": "expiry_schedule",
+							"value": "true"
+						},
+						{
+							"key": "points_summary",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reciept post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"receipt\": {\n    \"receipt_id\": \"1218312\",\n    \"dealer_name\": \"ABCD\",\n    \"customer_id\": \"9360267\",\n    \"uploaded_date\": \"2021-01-08\",\n    \"mobile\": \"97188888888\",\n    \"org_id\": \"string\",\n    \"user_language\": \"en\",\n    \"user_country\": \"TR\",\n    \"total_amount\": 30,\n    \"receipt_date\": \"2021-01-08\",\n    \"user_city\":\"Pune\"\n\n  },\n  \"image\": {\n    \"image_id\": \"123\"\n  },\n  \"items\": [\n    {\n      \"product_sku\": \"123\",\n      \"product_name\": \"asdf\",\n      \"quantity\": 0,\n      \"unit_price\": 0\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "{{url}}/receipt",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"receipt"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Customer identity mobile",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"root\": {\n      \"customer\": [\n      {\n         \"identifier\": \"mobile\",\n         \"old_value\": \"97188888888\",\n         \"new_value\": \"97188889898\"\n      }\n      ]\n   }\n}"
+				},
+				"url": {
+					"raw": "{{url}}/customer/update_identity",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"update_identity"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Customer identity Email",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"root\": {\n      \"customer\": [\n      {\n         \"identifier\": \"email\",\n         \"old_value\": \"neha.g@spurtreetech.in\",\n         \"new_value\": \"nehaaaaa.g@spurtreetech.in\"\n      }\n      ]\n   }\n}"
+				},
+				"url": {
+					"raw": "{{url}}/customer/update_identity",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"update_identity"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Email Generate OTP",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"entityType\":\"MOBILE\",\n   \"entityValue\":{{mobile}},\n   \"action\":\"GENERIC\",\n   \"template\":\"Hi user.Your OTP for validation is {{ validation_code }}.Enjoy\",\n   \"emailTemplate\":{\n      \"subject\":\"Validation Code\",\n      \"body\":\"Dear Customer, The validation code for your request is: {{ validation_code }}. You will also receive the validation code by SMS on your registered mobile number shortly. \"\n   },\n   \"channels\":[\n    {\n         \"type\":\"SMS\",\n         \"value\":{{mobile}}\n      },\n     \n      {\n         \"type\":\"EMAIL\",\n         \"value\":\"anupam12@gmail.com\"\n      }\n   \n   ]\n}"
+				},
+				"url": {
+					"raw": "{{url}}/generate/otp",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"generate",
+						"otp"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Email validate OTP",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"entityType\":\"MOBILE\",\n   \"entityValue\":{{mobile}},\n   \"code\":\"UB04WP\",\n   \"action\":\"GENERIC\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/validate/otp",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"validate",
+						"otp"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POINTS HISTORY",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/points/history",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"points",
+						"history"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rewards buy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"experience_id\":1646\n}"
+				},
+				"url": {
+					"raw": "{{url}}/rewards/buy",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"rewards",
+						"buy"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rewards get",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/rewards/get",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"rewards",
+						"get"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Vouchers get",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/vouchers/get",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"vouchers",
+						"get"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "IMAGE id generate",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "https://eu-api-gateway.capillarytech.com/mobile/v2/id/generate",
+					"protocol": "https",
+					"host": [
+						"eu-api-gateway",
+						"capillarytech",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"v2",
+						"id",
+						"generate"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "IMAGE get Upload link",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/image/upload?filename=5502230PH32.png",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"image",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						},
+						{
+							"key": "filename",
+							"value": "5502230PH32.png"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "IMAGE get URL",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/image?filename=55021J0KD14.png",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"image"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						},
+						{
+							"key": "filename",
+							"value": "55021J0KD14.png"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer  referral API",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/customer/get",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"get"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer  get (with point summary)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/customer/get",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"get"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Customer Add",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}",
+						"type": "text"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}",
+						"type": "text"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"root\": {\r\n    \"customer\": [\r\n      {\r\n        \"mobile\": \"{{mobile}}\",       \r\n        \"firstname\": \"Adeep\",\r\n        \"lastname\": \"BP\" ,\r\n        \"email\": \"adeep676@test.com\" ,\r\n        \"referral_code\":\"AS123\",\r\n        \"extended_fields\":{\r\n               \"field\":[\r\n                  {\r\n                     \"name\":\"gender\",\r\n                     \"value\":\"male\"\r\n                  },\r\n                  {\r\n                     \"name\":\"preferred_language\",\r\n                     \"value\":\"English\"\r\n                  },\r\n                  {\r\n                     \"name\":\"binding_date\",\r\n                     \"value\":\"2021-02-14 23:59:59\"\r\n                  }\r\n                  \r\n                  ]},\r\n        \"custom_fields\":{ \r\n               \"field\":[ \r\n                  { \r\n                     \"name\":\"contact_mobile10\",\r\n                     \"value\":\"123123123\"\r\n                  },\r\n                  { \r\n                     \"name\":\"address_line_two\",\r\n                     \"value\":\"Domlur\"\r\n                  },\r\n                  { \r\n                     \"name\":\"marketing_permission\",\r\n                     \"value\":\"1\"\r\n                  },\r\n                  { \r\n                     \"name\":\"terms_and_conditions\",\r\n                     \"value\":\"1\"\r\n                  },\r\n                  { \r\n                     \"name\":\"delete_flag\",\r\n                     \"value\":\"false\"\r\n                  },\r\n                  {\r\n                            \"name\": \"delete_reason\",\r\n                            \"value\": \"deleted profile\"\r\n                        }\r\n               ]\r\n            }\r\n             }\r\n          ]\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/customer/add",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"add"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "{{mobile}}",
+							"disabled": true
+						},
+						{
+							"key": "email",
+							"value": "{{identifierValue}}",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Customer Add Copy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}",
+						"type": "text"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}",
+						"type": "text"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"root\": {\r\n    \"customer\": [\r\n      {\r\n        \"mobile\": \"{{mobile}}\",\r\n       \r\n        \"firstname\": \"Ruchika\",\r\n        \"lastname\": \"test\"      }\r\n \t      ]\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/customer/add",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"add"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "{{mobile}}",
+							"disabled": true
+						},
+						{
+							"key": "email",
+							"value": "{{identifierValue}}",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cusotmer Update",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"type": "text",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"type": "text",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"type": "text",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"type": "text",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"root\": {\r\n    \"customer\": [\r\n      {\r\n        \"mobile\": \"{{mobile}}\",\r\n       \r\n        \"firstname\": \"Ruchika\",\r\n        \"lastname\": \"test\"      }\r\n \t      ]\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/customer/update",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"update"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "{{mobile}}",
+							"disabled": true
+						},
+						{
+							"key": "email",
+							"value": "{{identifierValue}}",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer redemption",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/customer/redemptions",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"redemptions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer transaction get",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/customer/transactions/get",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"transactions",
+						"get"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "subscription",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"root\": {\r\n    \"subscription\": [\r\n      {\r\n        \"mobile\":\"${mobile}\",\r\n        \"priority\": \"bulk\",\r\n        \"scope\": \"all\",\r\n        \"channel\": \"sms\",\r\n        \"is_subscribed\": \"0\"\r\n      },\r\n      {\r\n        \"mobile\":\"${mobile}\",\r\n        \"priority\": \"trans\",\r\n        \"scope\": \"all\",\r\n        \"channel\": \"sms\",\r\n        \"is_subscribed\": \"0\"\r\n      }\r\n    ]\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "https://apac2-api-gateway.capillarytech.com/mobile/v2/api/customer/subscriptions",
+					"protocol": "https",
+					"host": [
+						"apac2-api-gateway",
+						"capillarytech",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"v2",
+						"api",
+						"customer",
+						"subscriptions"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transacation ",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"root\":{\r\n      \"transaction\":[\r\n         {\r\n            \"type\":\"regular\",\r\n            \"number\":\"Trans919112ass\",\r\n            \"amount\":\"1000\",\r\n            \"currency_code\" : \"INR\",\r\n            \"notes\":\"2 line items\",\r\n            \"billing_time\":\"2019-04-01\",\r\n            \"gross_amount\":\"1000\",\r\n            \"discount\":\"10\",\r\n            \"phono\":\"8848240044\"\r\n                       \r\n         }\r\n                      ]\r\n   }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/transaction/add",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"transaction",
+						"add"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "subsription v2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"root\": {\r\n    \"subscription\": [\r\n      {\r\n        \"mobile\":\"${mobile}\",\r\n        \"priority\": \"bulk\",\r\n        \"scope\": \"all\",\r\n        \"channel\": \"sms\",\r\n        \"is_subscribed\": \"0\"\r\n      },\r\n      {\r\n        \"mobile\":\"${mobile}\",\r\n        \"priority\": \"trans\",\r\n        \"scope\": \"all\",\r\n        \"channel\": \"sms\",\r\n        \"is_subscribed\": \"0\"\r\n      }\r\n    ]\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "https://apac2-api-gateway.capillarytech.com/mobile/v2/api/customer/subscriptions",
+					"protocol": "https",
+					"host": [
+						"apac2-api-gateway",
+						"capillarytech",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"v2",
+						"api",
+						"customer",
+						"subscriptions"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "subsription v2 Copy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"root\": {\r\n    \"subscription\": [\r\n      {\r\n        \"mobile\":\"${mobile}\",\r\n        \"priority\": \"bulk\",\r\n        \"scope\": \"all\",\r\n        \"channel\": \"sms\",\r\n        \"is_subscribed\": \"0\"\r\n      },\r\n      {\r\n        \"mobile\":\"${mobile}\",\r\n        \"priority\": \"trans\",\r\n        \"scope\": \"all\",\r\n        \"channel\": \"sms\",\r\n        \"is_subscribed\": \"0\"\r\n      }\r\n    ]\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "https://apac2-api-gateway.capillarytech.com/mobile/v2/api/customer/subscriptions",
+					"protocol": "https",
+					"host": [
+						"apac2-api-gateway",
+						"capillarytech",
+						"com"
+					],
+					"path": [
+						"mobile",
+						"v2",
+						"api",
+						"customer",
+						"subscriptions"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "subscription get",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/subscriptions/get?channel=sms&priority=trans",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subscriptions",
+						"get"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						},
+						{
+							"key": "channel",
+							"value": "sms"
+						},
+						{
+							"key": "priority",
+							"value": "trans"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer transaction get by id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/customer/transactions/getbynumber?number=tt01",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customer",
+						"transactions",
+						"getbynumber"
+					],
+					"query": [
+						{
+							"key": "number",
+							"value": "tt01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "points redeeem",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"root\": {\r\n    \"redeem\": [{\r\n      \"points_redeemed\": \"10\",\r\n      \"transaction_number\": \"1234r742123\",\r\n      \"customer\": { \"mobile\": \"{{mobile}}\" },\r\n      \"notes\": \"Sample notes\",\r\n      \"validation_code\": \"6D18DU\"\r\n    }]\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/mobile/v2/api/points/redeem?skip_validation=true",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"mobile",
+						"v2",
+						"api",
+						"points",
+						"redeem"
+					],
+					"query": [
+						{
+							"key": "skip_validation",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Point earn burn redeem",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/points/history?start_date=2018-10-01",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"points",
+						"history"
+					],
+					"query": [
+						{
+							"key": "start_date",
+							"value": "2018-10-01"
+						},
+						{
+							"key": "end_date",
+							"value": "2020-10-01",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Store Locator near by REST API",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic Og==",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://apac2-sloc.capillarytech.com/store-locator/v1/brand/nearbystores?latitude=1.1&longitude=103&distance=100",
+					"protocol": "https",
+					"host": [
+						"apac2-sloc",
+						"capillarytech",
+						"com"
+					],
+					"path": [
+						"store-locator",
+						"v1",
+						"brand",
+						"nearbystores"
+					],
+					"query": [
+						{
+							"key": "cust1",
+							"value": "val1",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "city",
+							"value": "hyderabad",
+							"disabled": true
+						},
+						{
+							"key": "latitude",
+							"value": "1.1"
+						},
+						{
+							"key": "longitude",
+							"value": "103"
+						},
+						{
+							"key": "distance",
+							"value": "100"
+						}
+					]
+				},
+				"description": "\t\t"
+			},
+			"response": []
+		},
+		{
+			"name": "Tracker get",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"root\":{\r\n      \"transaction\":[\r\n         {\r\n            \"type\":\"regular\",\r\n            \"number\":\"Trans919112ass\",\r\n            \"amount\":\"1000\",\r\n            \"currency_code\" : \"INR\",\r\n            \"notes\":\"2 line items\",\r\n            \"billing_time\":\"2019-04-01\",\r\n            \"gross_amount\":\"1000\",\r\n            \"discount\":\"10\",\r\n            \"phono\":\"8848240044\"\r\n                       \r\n         }\r\n                      ]\r\n   }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/transaction/add",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"transaction",
+						"add"
+					],
+					"query": [
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "push history",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cap_authorization",
+						"value": "{{Authorization}}"
+					},
+					{
+						"key": "cap_brand",
+						"value": "{{brand}}"
+					},
+					{
+						"key": "cap_device_id",
+						"value": "{{deviceId}}"
+					},
+					{
+						"key": "cap_mobile",
+						"value": "{{mobile}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/push/history?identifierType=cuid&accountId=~2024ba2b&identifierValue={{$mobile}}&commChannelType=android",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"push",
+						"history"
+					],
+					"query": [
+						{
+							"key": "identifierType",
+							"value": "cuid"
+						},
+						{
+							"key": "mobile",
+							"value": "8497466521112",
+							"disabled": true
+						},
+						{
+							"key": "details",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "start_date",
+							"value": "2019-06-06",
+							"disabled": true
+						},
+						{
+							"key": "end_date",
+							"value": "2019-06-21",
+							"disabled": true
+						},
+						{
+							"key": "accountId",
+							"value": "~2024ba2b"
+						},
+						{
+							"key": "identifierValue",
+							"value": "{{$mobile}}"
+						},
+						{
+							"key": "commChannelType",
+							"value": "android"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
